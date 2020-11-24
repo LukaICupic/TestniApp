@@ -7,6 +7,7 @@ namespace TestniApp.Models.Data
 {
     public class Product
     {
+        Product() { }
         internal Product(string name, decimal price)
         {
             Name = name;
@@ -16,10 +17,10 @@ namespace TestniApp.Models.Data
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
-        public ICollection<ProductTax> Taxes { get; set; }
+        //public ICollection<ProductTax> Taxes { get; set; }
         public ICollection<InvoiceProduct> Items { get; set; }
 
-        public Product SetPrice(decimal price)
+        private Product SetPrice(decimal price)
         {
             if (price < 0 )
                 throw new ArgumentOutOfRangeException(nameof(price));

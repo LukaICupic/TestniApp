@@ -1,0 +1,89 @@
+﻿@using TestniApp.Models.ViewModels.InvoiceVM
+
+@model InvoiceView
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<h1>@Model.Title</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Invoice number</th>
+            <th scope="col">Creation date</th>
+            <th scope="col">Payment due</th>
+            <th scope="col">Items collection</th>
+
+            <th>Items quantity</th>
+            <th>Price per unit</th>
+            <th>Item(s) price</th>
+            <th>Items(s) price with tax</th>
+
+            <th scope="col">Full price</th>
+            <th scope="col">Created by</th>
+            <th scope="col">Sent to</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>@Model.Id</td>
+            <td>@Model.CreationDate.ToString("dd/MM/yyyy")</td>
+            <td>@Model.PaymentDue.ToString("dd/MM/yyyy")</td>
+
+            @foreach(var item in Model.Items)
+            {
+                <td>@item.Title</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price</td>
+            }
+
+
+            <td>@Model.ProductTotal</td>
+
+            <td>@Model.Total</td>
+            <td>@Model.Total</td>
+            <td>@Model.CreatedBy</td>
+            <td>@Model.SendingTo</td>
+
+    </tbody>
+</table>
+
+
+
+@*<table>
+    <tr>
+        <th>proizvod Id</th>
+        <th>Količina</th>
+    </tr>
+    <tbody>*@
+@*@if (Model.Items != null)
+    {
+        foreach (var item in Model.Items)
+        {
+            <tr>
+
+                <td>@item.ProductId</td>
+                <td>@item.Quantity</td>
+            </tr>
+        }
+    }
+
+    else {
+        <h1>Nothin has been yet created</h1>
+    }*@
+    </tbody>
+</table>
+@* promijeniti  *@
+@*<form action="/Invoices/AddItem" method="POST">
+        <input type="hidden" name="invoiceId" value="@Model.Id" />
+        @Html.DropDownList("productId", (SelectList)ViewBag.products)
+        <input type="number" name="quantity" />
+        <input type="submit" value="Dodaj" />
+    </form>*@

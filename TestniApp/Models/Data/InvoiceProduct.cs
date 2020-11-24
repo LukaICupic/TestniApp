@@ -7,6 +7,7 @@ namespace TestniApp.Models.Data
 {
     public class InvoiceProduct
     {
+        InvoiceProduct() { }
         internal InvoiceProduct(Invoice invoice, Product product, decimal price, decimal quantity)
         {
             InvoiceId = invoice.Id;
@@ -22,9 +23,7 @@ namespace TestniApp.Models.Data
         public int ProductId { get; set; }
         public Invoice Invoice { get; set; }
         public Product Product { get; set; }
-
-        //title?
-        public decimal Title { get; set; }
+        public string Title { get; set; }
         public decimal Price { get; set; } // bez poreza
         public decimal Quantity { get; set; }
         public decimal Total { get; set; } //bez poreza

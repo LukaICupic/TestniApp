@@ -3,31 +3,62 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using TestniApp.Models.Data;
 
 namespace TestniApp.Models
 {
-    // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
-            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
-            // Add custom user claims here
             return userIdentity;
         }
     }
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+
+        public AppDbContext() : base("AppDatabase")
         {
+            Database.SetInitializer<AppDbContext>(new CreateDatabaseIfNotExists<AppDbContext>());
         }
 
-        public static ApplicationDbContext Create()
+        public static AppDbContext Create()
         {
-            return new ApplicationDbContext();
+            return new AppDbContext();
         }
+
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceProduct> InvoiceProducts { get; set; }
+        public DbSet<InvoiceTax> InvoiceTaxes { get; set; }
+        public DbSet<Product> Products { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Product>().HasKey(p => p.Id);
+            modelBuilder.Entity<Invoice>().HasKey(i => i.Id);
+            modelBuilder.Entity<InvoiceProduct>().HasKey(ip => ip.Id);
+            modelBuilder.Entity<InvoiceTax>().HasKey(it => it.Id);
+
+            //Relationships
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Items)
+                .WithRequired(p => p.Product)
+                .HasForeignKey(p => p.ProductId);
+
+            modelBuilder.Entity<Invoice>()
+              .HasMany(p => p.Items)
+              .WithRequired(p => p.Invoice)
+              .HasForeignKey(p => p.InvoiceId);
+
+            modelBuilder.Entity<Invoice>()
+              .HasMany(p => p.Taxes)
+              .WithRequired(p => p.Invoice)
+              .HasForeignKey(p => p.InvoiceId);
+        }
+
     }
 }

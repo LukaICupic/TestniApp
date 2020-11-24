@@ -7,30 +7,40 @@ namespace TestniApp.Models.Data
 {
     public class Invoice
     {
-        internal Invoice(DateTimeOffset created, DateTimeOffset paymentDue, string createdBy, string sendingTo = default)
+        public Invoice() { }
+        internal Invoice(string title, string createdBy, string sendingTo = default)
         {
-            SetDates(created, paymentDue);
+            SetTitle(title);
+            SetDates();
             SetCreatedBy(createdBy);
             SendingTo = sendingTo;
         }
         public int Id { get; set; }
+        public string Title { get; set; }
         public DateTimeOffset CreationDate { get; set; }
-        public DateTimeOffset PaymentDue { get; set; } //datetime picker?
-        public decimal ProductTotal { get; set; } //svi proizvodi bez poreza cijena (cijena * kvantiteta) - TaxTotal
-        public decimal TaxTotal { get; set; } //izdatak sveukupni na porez(e) (cijena * porez)
-        public decimal Total { get; set; } //ItemTotal + TaxTotal
+        public DateTimeOffset PaymentDue { get; set; } 
+        public decimal ProductTotal { get; set; } 
+        public decimal TaxTotal { get; set; } 
+        public decimal Total { get; set; } 
         public string CreatedBy { get; set; }
         public string SendingTo { get; set; }
         public ICollection<InvoiceProduct> Items { get; set; }
         public ICollection<InvoiceTax> Taxes { get; set; }
 
-        public Invoice SetDates(DateTimeOffset created, DateTimeOffset paymentDue)
+        public Invoice SetTitle(string title)
         {
-            if (created != null && created < paymentDue)
-                throw new ArgumentException($"The payment date of the invoice is set to a time before the invoice was actually created");
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentNullException();
 
-            CreationDate = created;
-            PaymentDue = paymentDue;
+            Title = title;
+
+            return this;
+        }
+
+        public Invoice SetDates()
+        {
+            CreationDate = DateTimeOffset.Now;
+            PaymentDue = DateTimeOffset.Now.AddDays(7.0);
 
             return this;
         }
@@ -42,6 +52,29 @@ namespace TestniApp.Models.Data
 
             CreatedBy = createdBy;
             return this;
+        }
+
+        public Invoice SetProductTotal(decimal price, decimal quantity)
+        {
+            if (price < 0)
+                throw new ArgumentOutOfRangeException(nameof(price));
+
+            if (quantity < 0)
+                throw new ArgumentOutOfRangeException(nameof(quantity));
+
+            ProductTotal = price * quantity;
+            return this;
+        }
+
+        public Invoice SetTaxTotal(decimal taxTotal)
+        {
+            TaxTotal = taxTotal;
+            return this;
+        }
+
+       public void SetTotal()
+        {
+            Total = ProductTotal + TaxTotal;
         }
     }
 }

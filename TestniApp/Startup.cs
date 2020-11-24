@@ -1,5 +1,6 @@
 ﻿using Microsoft.Owin;
 using Owin;
+using TestniApp.Repositories;
 
 [assembly: OwinStartupAttribute(typeof(TestniApp.Startup))]
 namespace TestniApp
